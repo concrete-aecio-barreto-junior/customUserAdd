@@ -121,80 +121,94 @@ _MudaAtributos(){
  
    return $RC
 }
- 
+
+_FuncionUsage(){
+    echo -e "Usage: \n\t CustomUserAdd.sh [username|--help|-U]"
+    return 2 
+}
+
 ##------------------- Inicio do Script --------------------#
+
+if [ $# -eq 1 ]; then
+   if [ "$1" == "--usage" -o "$1" == "-U" ]; then
+      _FuncionUsage
+   else
+
+      ### Desativa bit imutavel
+      sudo test -f /root/unlock && sudo /root/unlock || { _MudaAtributos off || echo erro desativando atributos; }
  
-### Desativa bit imutavel
-sudo test -f /root/unlock && sudo /root/unlock || { _MudaAtributos off || echo erro desativando atributos; }
- 
-### Verifica se o usuario existe, do contrario, adicionar.
-if _VerificaUsuario $Usuario
-then
-   echo Usuario ja cadastrado
-else
-   if _AdicionaUsuario $Usuario
-   then
-      echo usuario adicionado com sucesso
-      if _AtualizaSenha $Usuario
+      ### Verifica se o usuario existe, do contrario, adicionar.
+      if _VerificaUsuario $Usuario
       then
-         echo senha atualizada conforme padrao inicial
+         echo Usuario ja cadastrado
       else
-         echo erro na atualizacao da senha. fazer manualemnte
+         if _AdicionaUsuario $Usuario
+         then
+            echo usuario adicionado com sucesso
+            if _AtualizaSenha $Usuario
+            then
+               echo senha atualizada conforme padrao inicial
+            else
+               echo erro na atualizacao da senha. fazer manualemnte
+            fi
+         else
+            echo erro no cadastro do usuario
+         fi
       fi
-   else
-      echo erro no cadastro do usuario
-   fi
-fi
  
-### Verifica se o acesso ssh esta autorizado ao usuario, senão, autorizar.
-if _VerificaSSH $Usuario
-then
-   if _ReiniciarSSH
-   then
-      echo ssh daemon reinciado por precaucao
-   else
-      echo erro reiniciando ssh
-   fi
-else
-   if _BackupArquivoConfiguracao /etc/ssh/sshd_config
-   then
-      if _AutorizarSSH $Usuario
+      ### Verifica se o acesso ssh esta autorizado ao usuario, senão, autorizar.
+      if _VerificaSSH $Usuario
       then
-         echo usuario adicionado no ssh
          if _ReiniciarSSH
          then
-            echo ssh reinciado apos adicao de usuario na configuracao
+            echo ssh daemon reinciado por precaucao
          else
-            echo problemas reinciando ssh
+            echo erro reiniciando ssh
          fi
       else
-         echo erro autorizando ssh
+         if _BackupArquivoConfiguracao /etc/ssh/sshd_config
+         then
+            if _AutorizarSSH $Usuario
+            then
+               echo usuario adicionado no ssh
+               if _ReiniciarSSH
+               then
+                  echo ssh reinciado apos adicao de usuario na configuracao
+               else
+                  echo problemas reinciando ssh
+               fi
+            else
+               echo erro autorizando ssh
+            fi
+         else
+            echo erro backupeando arquivo de configuracao /etc/ssh/sshd_config
+         fi
       fi
-   else
-      echo erro backupeando arquivo de configuracao /etc/ssh/sshd_config
-   fi
-fi
  
-### Verifica se o usuario esta no sudosh, senão, adicionar.
-if _VerificaSUDO $Usuario
-then
-   echo Usuario ja cadastrado no sudo
-else
-   if _BackupArquivoConfiguracao /etc/sudoers
-   then
-      echo arquivo sudoers backupeado
-      if _AutorizarSUDO $Usuario
+      ### Verifica se o usuario esta no sudosh, senão, adicionar.
+      if _VerificaSUDO $Usuario
       then
-         echo sudo autorizado
+         echo Usuario ja cadastrado no sudo
       else
-         echo erro autorizando o sudo
+         if _BackupArquivoConfiguracao /etc/sudoers
+         then
+            echo arquivo sudoers backupeado
+            if _AutorizarSUDO $Usuario
+            then
+               echo sudo autorizado
+            else
+               echo erro autorizando o sudo
+            fi
+         else
+            echo erro no backup do arquivo
+         fi
       fi
-   else
-      echo erro no backup do arquivo
+ 
+      ### Ativa bit imutavel
+      sudo test -f /root/lock && sudo /root/lock || { _MudaAtributos on || echo erro ativando atributos; }
    fi
+else
+   _FuncionUsage
 fi
- 
-### Ativa bit imutavel
-sudo test -f /root/lock && sudo /root/lock || { _MudaAtributos on || echo erro ativando atributos; }
- 
+
 #-------------------- Fim do Script --------------------#
