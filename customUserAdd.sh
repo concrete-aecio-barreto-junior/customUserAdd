@@ -8,6 +8,8 @@
 # Autor         : Aecio Junior <aecio.barreto.junior@concrete.com.br>
 # Data          : Fri Feb  2 12:49:13 EST 2018
 # Versao        : v1.0
+# Data          : Fri Feb 16 14:17:26 EST 2018 
+# Versao        : v1.1
 # Usage         : ssh -p22 -T sshuser@endereco.IP < ./CustomUserAdd.sh username
  
 ##----------------- Variaveis -----------------##
