@@ -8,18 +8,18 @@ Script for adding users with customized access with secure config files handling
 
 ## 1. Useradd
 > if _VerificaUsuario $Usuario
-	>> echo Usuario ja cadastrado
+>> echo Usuario ja cadastrado
 > else
-	>> if _AdicionaUsuario $Usuario
-			>>> echo usuario adicionado com sucesso
-			>>> if _AtualizaSenha $Usuario
-				 >>>> echo senha atualizada conforme padrao inicial
-			>>> else
-				 >>>> echo erro na atualizacao da senha. fazer manualemnte
-			>>> fi
-	 >> else
-			>>> echo erro no cadastro do usuario
-	 >> fi
+>> if _AdicionaUsuario $Usuario
+> > > echo usuario adicionado com sucesso
+> > > if _AtualizaSenha $Usuario
+> > > > echo senha atualizada conforme padrao inicial
+> > > else
+> > > > echo erro na atualizacao da senha. fazer manualemnte
+> > > fi
+> > else
+> > > echo erro no cadastro do usuario
+> > fi
 > fi
 
 ## 2. SSH config
