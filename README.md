@@ -6,16 +6,43 @@ Script for adding users with customized access with secure config files handling
 
 ## Operation/workflow
 
-1. Useradd
-	- Check if user already exist else add;
-	- Set a initial password;
-	
-2. SSH config
-	- Check if user's into "sshd.config" file, else add;
-	- Restart SSH daemon;
+## 1. Useradd
+> if _VerificaUsuario $Usuario
+	>> echo Usuario ja cadastrado
+> else
+	>> if _AdicionaUsuario $Usuario
+			>>> echo usuario adicionado com sucesso
+			>>> if _AtualizaSenha $Usuario
+				 >>>> echo senha atualizada conforme padrao inicial
+			>>> else
+				 >>>> echo erro na atualizacao da senha. fazer manualemnte
+			>>> fi
+	 >> else
+			>>> echo erro no cadastro do usuario
+	 >> fi
+> fi
 
-3. Sudoers
-	- Check if user's into "sudoers" file, else add;
+## 2. SSH config
+
+## 3. Sudoers
+
+
+
+
+
+	- Check if user already exist else add;
+		 - Set a initial password;
+		 _Security files `/etc/sudoers`, `/etc/ssh/sshd_config` are kept logged and backed up_
+
+
+
+
+
+		 >> - Check if user's into `sshd.config` file, else add;
+	 	>> - Restart SSH daemon;
+
+		>> - Check if user's into `sudoers` file, else add;
+
 
 ## Usage
 
